@@ -3,15 +3,17 @@ package jacob.dan.base.bean;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
 import jacob.dan.base.bean.Constraint.Type;
 import jacob.dan.base.bean.util.StringUtils;
-import jacob.dan.base.factory.SnowflakeIdFactory;
 
 /**
  * @author ChangJian
@@ -21,6 +23,8 @@ import jacob.dan.base.factory.SnowflakeIdFactory;
 public class BaseEntity {
 
 	@Id
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "jacob.dan.base.factory.SnowflakeIdGenerateor")
 	@Column(length = 20)
 	protected String id;
 	@JSONField(serialize = false)
@@ -44,9 +48,6 @@ public class BaseEntity {
 	}
 
 	public void init() {
-		if (StringUtils.isEmpty(id)) {
-			id = SnowflakeIdFactory.getInstance().nextStringId();
-		}
 		gmtCreate = new Date();
 		gmtModify = new Date();
 		isDeleted = 0;

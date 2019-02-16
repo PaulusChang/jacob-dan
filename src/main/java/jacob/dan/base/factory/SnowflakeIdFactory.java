@@ -1,8 +1,17 @@
 package jacob.dan.base.factory;
 
-public class SnowflakeIdFactory  {
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Properties;
+
+import org.springframework.core.io.UrlResource;
+
+import jacob.dan.base.constant.Constant;
+
+public class SnowflakeIdFactory {
 	
 	private static SnowflakeIdFactory factory = null;
+	private static final String PROPERTIES_PATH = Constant.CONF_PATH + "snowflake.properties";
 
 	private final long twepoch = 1288834974657L;
 	private final long workerIdBits = 5L;
@@ -23,12 +32,49 @@ public class SnowflakeIdFactory  {
 
 	static {
 		new SnowflakeIdFactory();
+		UrlResource urlResource = null;
+		try {
+			urlResource = new UrlResource(PROPERTIES_PATH);
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		Properties prop = new Properties();
+		/*
+		 * java.util.Properties
+		 * 该类可以解析properties文件，并将
+		 * 内容以类似Map的形式给我们使用。
+		 * "="左面为key,"="右面为value.
+		 */
+		try {
+			prop.load(urlResource.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		long workerId = Long.valueOf(prop.getProperty("workerId"));
+		if (workerId > factory.maxWorkerId || workerId < 0) {
+			throw new IllegalArgumentException(String.format(
+					"worker Id can't be greater than %d or less than 0",
+					factory.maxWorkerId));
+		}
+		factory.workerId = Long.valueOf(prop.getProperty("workerId"));
+		
+		Long datacenterId = Long.valueOf(prop.getProperty("datacenterId"));
+		if (datacenterId > factory.maxDatacenterId || datacenterId < 0) {
+			throw new IllegalArgumentException(String.format(
+					"datacenter Id can't be greater than %d or less than 0",
+					factory.maxDatacenterId));
+		}
+		factory.datacenterId = Long.valueOf(prop.getProperty("datacenterId"));
 	}
 	
 	/**
 	 * Spring加载的时候会执行
 	 */
-	private SnowflakeIdFactory() {
+	public SnowflakeIdFactory() {
+		if (null != factory) {
+			return;
+		}
 		factory = this;
 	}
 
@@ -81,7 +127,7 @@ public class SnowflakeIdFactory  {
 
 	}
 
-	public void setWorkerId(long workerId) {
+	public void initWorkerId(long workerId) {
 		if (this.workerId != 0) {
 			throw new RuntimeException("SnowflakeIdFactory.workerId已经完成初始化");
 		}
@@ -93,7 +139,7 @@ public class SnowflakeIdFactory  {
 		this.workerId = workerId;
 	}
 
-	public void setDatacenterId(long datacenterId) {
+	public void initDatacenterId(long datacenterId) {
 		if (this.datacenterId != 0) {
 			throw new RuntimeException("SnowflakeIdFactory.datacenterId已经完成初始化");
 		}
@@ -103,14 +149,6 @@ public class SnowflakeIdFactory  {
 					maxDatacenterId));
 		}
 		this.datacenterId = datacenterId;
-	}
-
-	public long getWorkerId() {
-		return workerId;
-	}
-
-	public long getDatacenterId() {
-		return datacenterId;
 	}
 
 	public String nextStringId() {
