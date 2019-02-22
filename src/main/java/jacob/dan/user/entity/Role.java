@@ -4,22 +4,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import jacob.dan.base.bean.BaseEntity;
+import jacob.dan.base.bean.NameEntity;
 
 @Entity
-@Table(name = "owg_user_role")
-public class Role extends BaseEntity {
+@Table(name = "dan_role")
+public class Role extends NameEntity {
 
-	@Column(columnDefinition = "varchar(128)")
-	private String name;
 	private String value;
+	@Column(length = 127)
 	private String description;
 	
-	public String getName() {
-		return name;
+	public Role() {
+		super();
 	}
-	public void setName(String name) {
+	public Role(String name, String value, String description) {
+		super();
 		this.name = name;
+		this.value = value;
+		this.description = description;
 	}
 	public String getValue() {
 		return value;

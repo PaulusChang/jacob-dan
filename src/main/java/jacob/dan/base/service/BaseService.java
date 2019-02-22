@@ -13,6 +13,8 @@ public interface BaseService<T extends BaseEntity> {
 	
 	T getOne(String id);
 	
+	List<T> findAll();
+
 	List<T> findAll(T t);
 	
 	Page<T> findAll(T t, PageRequestBean pageRequestBean);

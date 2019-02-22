@@ -13,24 +13,28 @@ import java.util.GregorianCalendar;
  */
 public class DateUtils {
 	
+	
 	/**
 	 * 日期格式及正则表达式
 	 */
 	public static enum Format {
-		yyyy("yyyy", "%Y", "[12]\\d{3}"),
-		yyyyMM("yyyyMM", "%Y%m", "[12]\\d{3}((0[1-9])|(1[0-2]))"),
-		yyyy_MM("yyyy-MM", "%Y-%m", "[12]\\d{3}-((0[1-9])|(1[0-2]))"),
-		yyyyMMdd("yyyyMMdd", "%Y%m%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[1][0-9]|2[0-9])))"),
-		yyyy_MM_dd("yyyy-MM-dd", "%Y-%m-%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-9])))"),
-		yyyyMMdd_FS("yyyy/MM/dd", "%Y/%m/%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})/(((0[13578]|1[02])/(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)/(0[1-9]|[12][0-9]|30))|(02/(0[1-9]|[1][0-9]|2[0-8])))"),
-		yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss", "%Y-%m-%d %H:%i:%s", "[1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\\s+(20|21|22|23|[0-1]\\d):[0-5]\\d:[0-5]\\d"),
+		yyyy("yyyy", Field.YEAR, "%Y", "[12]\\d{3}"),
+		yyyyMM("yyyyMM", Field.MONTH, "%Y%m", "[12]\\d{3}((0[1-9])|(1[0-2]))"),
+		yyyy_MM("yyyy-MM", Field.MONTH, "%Y-%m", "[12]\\d{3}-((0[1-9])|(1[0-2]))"),
+		yyyyMMdd("yyyyMMdd", Field.DAY, "%Y%m%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[1][0-9]|2[0-9])))"),
+		yyyy_MM_dd("yyyy-MM-dd", Field.DAY, "%Y-%m-%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-9])))"),
+		yyyyMMdd_FS("yyyy/MM/dd", Field.DAY, "%Y/%m/%d", "([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})/(((0[13578]|1[02])/(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)/(0[1-9]|[12][0-9]|30))|(02/(0[1-9]|[1][0-9]|2[0-8])))"),
+		yyyy_MM_dd_HH_mm("yyyy-MM-dd HH:mm", Field.MINUTE, "%Y-%m-%d %H:%i", "[1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\\s+(20|21|22|23|[0-1]\\d):[0-5]\\d"),
+		yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss", Field.SECOND, "%Y-%m-%d %H:%i:%s", "[1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\\s+(20|21|22|23|[0-1]\\d):[0-5]\\d:[0-5]\\d"),
 		;
 		private String format;
+		private Field min;
 		private String strftimeFormat;
 		private String regex;
 		
-		private Format(String format, String strftimeFormat, String regex) {
+		private Format(String format, Field min, String strftimeFormat, String regex) {
 			this.format = format;
+			this.min = min;
 			this.strftimeFormat = strftimeFormat;
 			this.regex = regex;
 		}
@@ -56,23 +60,34 @@ public class DateUtils {
 		public String getRegex() {
 			return regex;
 		}
+
+		public Field getMin() {
+			return min;
+		}
+		
 	}
 	
 	public static enum Field {
-		YEAR(1), MONTH(2), WEEK(3), DAY(5);
+		YEAR(1), MONTH(2), WEEK(3), DAY(5), MINUTE(1000L*60), SECOND(1000L);
 		private Integer value;
+		private Long ms;
 
 		private Field(Integer value) {
 			this.value = value;
+		}
+
+		private Field(Long ms) {
+			this.ms = ms;
 		}
 
 		public Integer getValue() {
 			return value;
 		}
 
-		public void setValue(Integer value) {
-			this.value = value;
+		public Long getMs() {
+			return ms;
 		}
+
 	}
 	
 	
@@ -153,6 +168,11 @@ public class DateUtils {
 		if (null == date) {
 			return null;
 		}
+		if (null != field.getMs()) {
+			Long dateValue = date.getTime();
+			dateValue += amount * field.getMs();
+			return new Date(dateValue);
+		}
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(date);
 		gc.add(field.getValue(), amount);
@@ -173,6 +193,11 @@ public class DateUtils {
 		if (null == date2) {
 			return null;
 		} 
+		if (null != field.getMs()) {
+			Long dateValue = date2.getTime();
+			dateValue += amount * field.getMs();
+			return getString(new Date(dateValue), getFormat(date));
+		}
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(date2);
 		gc.add(field.getValue(), amount);

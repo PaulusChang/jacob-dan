@@ -1,135 +1,151 @@
 package jacob.dan.user.entity;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import jacob.dan.base.bean.BaseEntity;
+import jacob.dan.base.bean.Constraint;
+import jacob.dan.base.bean.Constraint.Null;
+import jacob.dan.base.bean.Constraint.Type;
+import jacob.dan.base.bean.NameEntity;
 
 @Entity
-@Table(name = "owg_user_user")
-public class User extends BaseEntity {
+@Table(name = "dan_user")
+public class User extends NameEntity {
 	
+	private Integer age;
 	
-	private String openid;
-	
-	private String accessToken;
-	
-	private Long accessTokenLimit;
 	@Transient
-	private Integer expiresIn;
+	@Constraint(name = "age")
+	private Integer[] ageArray;
+	@Transient
+	private List<Integer> ageList;
+	@Transient
+	@Constraint(name = "age", type = Type.MIN_OPEN)
+	private Integer ageMinOpen;
+	@Transient
+	@Constraint(name = "age", type = Type.MAX_CLOSE)
+	private Integer ageMaxClose;
 	
-	private String refreshToken;
+	private Float weight;
 	
-	private Long refreshTokenLimit;
+	private Date birthday;
+	@Transient
+	@Constraint(name = "birthday", type = Type.MIN_OPEN)
+	private String birthdayMinOpen;
+	@Transient
+	@Constraint(name = "birthday", type = Type.MAX_CLOSE)
+	private String birthdayMaxClose;
+
+	private String hobby;
+	@Transient
+	@Constraint(name = "hobby")
+	private Null bobbyNull;
 	
-	private String scope;
-	
-	private String nickname;
-	
-	private Short sex;
-	
-	private String province;
-	
-	private String city;
-	
-	private String country;
-	
-	private String headimgurl;
-	
-	private String privilege;
-	
-	private String unionid;
-	
-	public String getOpenid() {
-		return openid;
+	public User() {
+		super();
 	}
-	public void setOpenid(String openid) {
-		this.openid = openid;
+
+	public User(String name, Integer age, Float weight, Date birthday, String hobby) {
+		super();
+		this.name = name;
+		this.age = age;
+		this.weight = weight;
+		this.birthday = birthday;
+		this.hobby = hobby;
 	}
-	public String getAccessToken() {
-		return accessToken;
+
+	public Integer getAge() {
+		return age;
 	}
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
-	public Long getAccessTokenLimit() {
-		return accessTokenLimit;
+
+	public Integer[] getAgeArray() {
+		return ageArray;
 	}
-	public void setAccessTokenLimit(Long accessTokenLimit) {
-		this.accessTokenLimit = accessTokenLimit;
+
+	public void setAgeArray(Integer[] ageArray) {
+		this.ageArray = ageArray;
 	}
-	public Integer getExpiresIn() {
-		return expiresIn;
+
+	public List<Integer> getAgeList() {
+		return ageList;
 	}
-	public void setExpiresIn(Integer expiresIn) {
-		this.expiresIn = expiresIn;
+
+	public void setAgeList(List<Integer> ageList) {
+		this.ageList = ageList;
 	}
-	public String getRefreshToken() {
-		return refreshToken;
+
+
+	public Integer getAgeMinOpen() {
+		return ageMinOpen;
 	}
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
+
+	public void setAgeMinOpen(Integer ageMinOpen) {
+		this.ageMinOpen = ageMinOpen;
 	}
-	public Long getRefreshTokenLimit() {
-		return refreshTokenLimit;
+
+	public Integer getAgeMaxClose() {
+		return ageMaxClose;
 	}
-	public void setRefreshTokenLimit(Long refreshTokenLimit) {
-		this.refreshTokenLimit = refreshTokenLimit;
+
+	public void setAgeMaxClose(Integer ageMaxClose) {
+		this.ageMaxClose = ageMaxClose;
 	}
-	public String getScope() {
-		return scope;
+
+	public Float getWeight() {
+		return weight;
 	}
-	public void setScope(String scope) {
-		this.scope = scope;
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
-	public String getNickname() {
-		return nickname;
+
+	public String getBirthdayMinOpen() {
+		return birthdayMinOpen;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+
+	public void setBirthdayMinOpen(String birthdayMinOpen) {
+		this.birthdayMinOpen = birthdayMinOpen;
 	}
-	public Short getSex() {
-		return sex;
+
+	public String getBirthdayMaxClose() {
+		return birthdayMaxClose;
 	}
-	public void setSex(Short sex) {
-		this.sex = sex;
+
+	public void setBirthdayMaxClose(String birthdayMaxClose) {
+		this.birthdayMaxClose = birthdayMaxClose;
 	}
-	public String getProvince() {
-		return province;
+
+	public Date getBirthday() {
+		return birthday;
 	}
-	public void setProvince(String province) {
-		this.province = province;
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
-	public String getCity() {
-		return city;
+
+	public String getHobby() {
+		return hobby;
 	}
-	public void setCity(String city) {
-		this.city = city;
+
+	public void setHobby(String hobby) {
+		this.hobby = hobby;
 	}
-	public String getCountry() {
-		return country;
+
+	public Null getBobbyNull() {
+		return bobbyNull;
 	}
-	public void setCountry(String country) {
-		this.country = country;
+
+	public void setBobbyNull(Null bobbyNull) {
+		this.bobbyNull = bobbyNull;
 	}
-	public String getHeadimgurl() {
-		return headimgurl;
-	}
-	public void setHeadimgurl(String headimgurl) {
-		this.headimgurl = headimgurl;
-	}
-	public String getPrivilege() {
-		return privilege;
-	}
-	public void setPrivilege(String privilege) {
-		this.privilege = privilege;
-	}
-	public String getUnionid() {
-		return unionid;
-	}
-	public void setUnionid(String unionid) {
-		this.unionid = unionid;
-	}
+
 	
 }

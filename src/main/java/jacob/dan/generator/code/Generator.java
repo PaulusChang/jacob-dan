@@ -13,6 +13,7 @@ import jacob.dan.user.entity.User;
 public class Generator {
 	
 	public static final String BASE_PACKAGE = "jacob.dan.base";
+	public static final String SRC_MAIN_JAVA = "src/main/java/";
 	
 	public static boolean generate(Category category, Class<?> cls) {
 		System.out.println("Generator: " + cls.getSimpleName() + category.getName() + "-start");
@@ -22,7 +23,12 @@ public class Generator {
 		for (String key : dataMap.keySet()) {
 			content = content.replace("${" + key + "}", dataMap.get(key));
 		}
-		FileUtils.newFile(content, "src/main/java/" + dataMap.get("superPackage").replace('.', '/') + "/" + category.getPath() + "/" + dataMap.get("ClassName") + category.getName() + ".java");
+		File file = new File(SRC_MAIN_JAVA + dataMap.get("superPackage").replace('.', '/') + "/" + category.getPath() + "/" + dataMap.get("ClassName") + category.getName() + ".java");
+		if (file.exists()) {
+			System.out.println("Generator: " + cls.getSimpleName() + category.getName() + "-file exists");
+			return false;
+		}
+		FileUtils.newFile(content, SRC_MAIN_JAVA + dataMap.get("superPackage").replace('.', '/') + "/" + category.getPath() + "/" + dataMap.get("ClassName") + category.getName() + ".java");
 		System.out.println("Generator: " + cls.getSimpleName() + category.getName() + "-finish");
 		return true;
 	}
@@ -35,7 +41,7 @@ public class Generator {
 	}
 	
 	public static void generate(Category category, Package entityPackage) throws ClassNotFoundException {
-		File packageFile = new File("src/main/java/" + entityPackage.getName().replace('.', '/'));
+		File packageFile = new File(SRC_MAIN_JAVA + entityPackage.getName().replace('.', '/'));
 		for (String fileName : packageFile.list()) {
 			Class<?> cls = Class.forName(entityPackage.getName() + "." + fileName.substring(0, (fileName.length() - ".java".length())));
 			generate(category, cls);
@@ -43,7 +49,7 @@ public class Generator {
 	}
 	
 	public static void generate(CategoryList categoryList, Package entityPackage) throws ClassNotFoundException {
-		File packageFile = new File("src/main/java/" + entityPackage.getName().replace('.', '/'));
+		File packageFile = new File(SRC_MAIN_JAVA + entityPackage.getName().replace('.', '/'));
 		List<Category> categories = categoryList.getCategories();
 		for (String fileName : packageFile.list()) {
 			Class<?> cls = Class.forName(entityPackage.getName() + "." + fileName.substring(0, (fileName.length() - ".java".length())));

@@ -16,6 +16,8 @@ import javax.persistence.criteria.CriteriaBuilder.In;
 import org.springframework.data.jpa.domain.Specification;
 
 import jacob.dan.base.bean.Constraint.Null;
+import jacob.dan.base.bean.util.DateUtils;
+import jacob.dan.base.bean.util.DateUtils.Format;
 import jacob.dan.base.bean.util.ReflectUtils;
 import jacob.dan.base.bean.util.StringUtils;
 import jacob.dan.base.constant.YesNo;
@@ -25,7 +27,7 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8776684520990805286L;
+	private static final long serialVersionUID = 68758055930892190L;
 	
 	protected T t;
 	protected Root<T> root;
@@ -51,7 +53,11 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 			if (!ReflectUtils.existValue(t, field)) {
 				continue;
 			}
-			predicates.add(constraint(field, field.getAnnotation(Constraint.class)));
+			Predicate predicate = constraint(field, field.getAnnotation(Constraint.class));
+			if (null == predicate) {
+				continue;
+			}
+			predicates.add(predicate);
 		}
 		return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 	}
@@ -97,8 +103,8 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 			return numPredicate((Number) objVal, constraint, aimFieldName);
 		}
 		
-		if (objVal instanceof Date) {
-			return datePredicate((Date) objVal, constraint, aimFieldName);
+		if (Date.class.isAssignableFrom(aimField.getType())) {
+			return datePredicate(objVal, constraint, aimFieldName);
 		}
 		return null;
 	}
@@ -123,12 +129,55 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 			return criteriaBuilder.gt(root.get(fieldName).as(Number.class), num);
 			
 		default:
-			return null;
+			return criteriaBuilder.equal(root.get(fieldName).as(Number.class), num);
 		}
 		
 	}
 	
-	protected Predicate datePredicate(Date date, Constraint constraint, String fieldName) {
+	protected Predicate datePredicate(Object objVal, Constraint constraint, String fieldName) {
+		if (objVal instanceof Date) {
+			return predicate((Date) objVal, constraint, fieldName);
+		}
+		if (objVal instanceof String) {
+			return stringDatePredicate((String) objVal, constraint, fieldName);
+		}
+		return null;
+	}
+	
+	protected Predicate stringDatePredicate(String dateStr, Constraint constraint, String fieldName) {
+		Date minDate = null;
+		Date maxDate = null;
+		Format format = DateUtils.getFormat(dateStr);
+		if (null == format) {
+			return null;
+		}
+		switch (constraint.type()) {
+		
+		case MAX_CLOSE:
+			maxDate = DateUtils.getDate(DateUtils.add(dateStr, format.getMin(), 1));
+			return criteriaBuilder.lessThan(root.get(fieldName).as(Date.class), maxDate);
+
+		case MAX_OPEN:
+			maxDate = DateUtils.getDate(dateStr);
+			return criteriaBuilder.lessThan(root.get(fieldName).as(Date.class), maxDate);
+			
+		case MIN_CLOSE:
+			minDate = DateUtils.getDate(dateStr);
+			return criteriaBuilder.greaterThanOrEqualTo(root.get(fieldName).as(Date.class), minDate);
+			
+		case MIN_OPEN:
+			minDate = DateUtils.getDate(DateUtils.add(dateStr, format.getMin(), 1));
+			return criteriaBuilder.greaterThan(root.get(fieldName).as(Date.class), minDate);
+			
+		default:
+			minDate = DateUtils.getDate(dateStr);
+			maxDate = DateUtils.getDate(DateUtils.add(dateStr, format.getMin(), 1));
+			return criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get(fieldName).as(Date.class), minDate), 
+					criteriaBuilder.lessThan(root.get(fieldName).as(Date.class), maxDate));
+		}
+	}
+	
+	protected Predicate predicate(Date date, Constraint constraint, String fieldName) {
 		switch (constraint.type()) {
 		
 		case MAX_CLOSE:
@@ -144,7 +193,7 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 			return criteriaBuilder.greaterThan(root.get(fieldName).as(Date.class), date);
 			
 		default:
-			return null;
+			return criteriaBuilder.equal(root.get(fieldName).as(Date.class), date);
 		}
 	}
 	/**

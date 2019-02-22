@@ -6,9 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import jacob.dan.base.bean.util.FileUtils;
 import jacob.dan.base.bean.util.StringUtils;
-import jacob.dan.base.bean.util.XmlUtils;
 
 @XmlRootElement(name = "categories")
 public class CategoryList {
@@ -108,12 +106,4 @@ public class CategoryList {
 		return categoryList;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(XmlUtils.getXmlString(testXml(), CategoryList.class, CategoryList.Category.class));
-		String xml = FileUtils.getString("E:\\Users\\Administrator\\eclipse-workspace/jacob-dan/src/main/resources/generator/conf/template-category.xml");
-		CategoryList categoryList = XmlUtils.xmlToBean(CategoryList.class, xml);
-		for (Category string : categoryList.categories) {
-			System.out.println(string);
-		}
-	}
 }

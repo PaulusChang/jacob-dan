@@ -71,6 +71,11 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
 	}
 
 	@Override
+	public List<T> findAll() {
+		return findAll(null);
+	}
+
+	@Override
 	public List<T> findAll(T t) {
 		if (null == t) {
 			t = newTinstance();
