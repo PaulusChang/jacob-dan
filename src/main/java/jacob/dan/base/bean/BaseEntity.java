@@ -31,7 +31,7 @@ public class BaseEntity {
 	@JSONField(name="gmt_Modify", format="yyyy-MM-dd", ordinal = 3)
 	protected Date gmtModify;
 	@Transient
-	protected OrderBean gmtModifyOrder;
+	protected OrderBean orderBean;
 	protected Short isDeleted;
 	
 	public BaseEntity() {
@@ -78,12 +78,13 @@ public class BaseEntity {
 	public void setGmtModify(Date gmtModify) {
 		this.gmtModify = gmtModify;
 	}
-	public OrderBean getGmtModifyOrder() {
-		return gmtModifyOrder;
+
+	public OrderBean getOrderBean() {
+		return orderBean;
 	}
 
-	public void setGmtModifyOrder(OrderBean gmtModifyOrder) {
-		this.gmtModifyOrder = gmtModifyOrder;
+	public void setOrderBean(OrderBean orderBean) {
+		this.orderBean = orderBean;
 	}
 
 	public Short getIsDeleted() {

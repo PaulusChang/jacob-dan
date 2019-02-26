@@ -8,7 +8,7 @@ import jacob.dan.base.bean.BaseEntity;
 import jacob.dan.base.bean.PageRequestBean;
 
 public interface BaseService<T extends BaseEntity> {
-
+	
 	void save(T t);
 	
 	T getOne(String id);

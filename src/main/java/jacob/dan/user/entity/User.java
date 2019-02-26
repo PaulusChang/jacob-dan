@@ -22,6 +22,7 @@ public class User extends NameEntity {
 	@Constraint(name = "age")
 	private Integer[] ageArray;
 	@Transient
+	@Constraint(name = "age")
 	private List<Integer> ageList;
 	@Transient
 	@Constraint(name = "age", type = Type.MIN_OPEN)
@@ -41,6 +42,15 @@ public class User extends NameEntity {
 	private String birthdayMaxClose;
 
 	private String hobby;
+	@Transient
+	@Constraint(name = "hobby", type = Type.LIKE)
+	private String hobbyLike;
+	@Transient
+	@Constraint(name = "hobby", type = Type.START_WITH)
+	private String hobbyStartWith;
+	@Transient
+	@Constraint(name = "hobby", type = Type.END_WITH)
+	private String hobbyEndWith;
 	@Transient
 	@Constraint(name = "hobby")
 	private Null bobbyNull;
@@ -145,6 +155,30 @@ public class User extends NameEntity {
 
 	public void setBobbyNull(Null bobbyNull) {
 		this.bobbyNull = bobbyNull;
+	}
+
+	public String getHobbyLike() {
+		return hobbyLike;
+	}
+
+	public void setHobbyLike(String hobbyLike) {
+		this.hobbyLike = hobbyLike;
+	}
+
+	public String getHobbyStartWith() {
+		return hobbyStartWith;
+	}
+
+	public void setHobbyStartWith(String hobbyStartWith) {
+		this.hobbyStartWith = hobbyStartWith;
+	}
+
+	public String getHobbyEndWith() {
+		return hobbyEndWith;
+	}
+
+	public void setHobbyEndWith(String hobbyEndWith) {
+		this.hobbyEndWith = hobbyEndWith;
 	}
 
 	

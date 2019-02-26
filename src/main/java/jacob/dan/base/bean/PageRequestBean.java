@@ -13,6 +13,16 @@ public class PageRequestBean {
 	private Integer pageSize;
 	private Integer pageNo;
 	
+	public PageRequestBean() {
+		super();
+	}
+
+	public PageRequestBean(Integer pageSize, Integer pageNo) {
+		super();
+		this.pageSize = pageSize;
+		this.pageNo = pageNo;
+	}
+
 	public PageRequest toPageRequest(Sort sort) {
 		return PageRequest.of(pageNo, pageSize, sort);
 	}

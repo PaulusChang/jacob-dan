@@ -1,7 +1,6 @@
 package jacob.dan.base.bean;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,7 +92,17 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 			
 		case LIKE:
 			if (objVal instanceof String) {
-				return criteriaBuilder.like((Expression<String>) expression, String.valueOf(objVal));
+				return criteriaBuilder.like((Expression<String>) expression, String.valueOf("%" + objVal + "%"));
+			}
+			
+		case START_WITH:
+			if (objVal instanceof String) {
+				return criteriaBuilder.like((Expression<String>) expression, String.valueOf(objVal + "%"));
+			}
+			
+		case END_WITH:
+			if (objVal instanceof String) {
+				return criteriaBuilder.like((Expression<String>) expression, String.valueOf("%" + objVal));
 			}
 		default: 
 			
@@ -205,17 +214,17 @@ public class BaseSpecification <T extends BaseEntity> implements Specification<T
 	 */
 	@SuppressWarnings("unchecked")
 	protected Predicate inPredicate(Object obj, String fieldName) {
-		List<Object> subObjs;
+		Object[] subObjArray;
 		if (obj instanceof List) {
-			subObjs = (List<Object>) obj;
+			subObjArray = ((List<Object>) obj).toArray();
 		} else {
-			subObjs = Arrays.asList(obj);
+			subObjArray = (Object[]) obj;
 		}
-		if (subObjs.size() == 0) {
+		if (subObjArray.length == 0) {
 			return null;
 		}
 		In<Object> in = criteriaBuilder.in(root.get(fieldName));
-		for (Object object : subObjs) {
+		for (Object object : subObjArray) {
 			in.value(object);
 		}
 		return in;

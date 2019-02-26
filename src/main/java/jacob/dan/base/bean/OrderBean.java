@@ -18,6 +18,16 @@ public class OrderBean {
 	private Boolean ignoreCase;
 	private NullHandling nullHandling;
 	
+	public OrderBean() {
+		super();
+	}
+
+	public OrderBean(Direction direction, String property) {
+		super();
+		this.direction = direction;
+		this.property = property;
+	}
+
 	public Order toOrder() {
 		if (StringUtils.isEmpty(property)) {
 			return null;

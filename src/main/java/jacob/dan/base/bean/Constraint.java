@@ -28,6 +28,8 @@ public @interface Constraint {
 		EQUAL,
 		UNEQUAL,
 		LIKE,
+		START_WITH,
+		END_WITH,
 		MIN_OPEN,
 		MAX_OPEN,
 		MIN_CLOSE,
