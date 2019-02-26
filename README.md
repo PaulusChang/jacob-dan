@@ -9,6 +9,9 @@ simple springboot+jpa
 
 BaseEntity中id为String类型，由SnowflakeIdFactory产生，除了上述字段，还增加了is\_deleted字段作为删除标识
 
+GitHub: [https://github.com/PaulusChang/jacob-dan](https://github.com/PaulusChang/jacob-dan)
+
+Gitee: [https://gitee.com/paulusgit/jacob-dan](https://gitee.com/paulusgit/jacob-dan)
 
 1. 创建实体类，并调用方法生成相应的 service/repository 代码，以 jacob.dan.user.entity.UserRole 为例
 
