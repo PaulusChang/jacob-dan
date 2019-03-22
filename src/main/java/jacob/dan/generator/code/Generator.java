@@ -22,7 +22,13 @@ public class Generator {
 		for (String key : dataMap.keySet()) {
 			content = content.replace("${" + key + "}", dataMap.get(key));
 		}
-		FileUtils.newFile(content, "src/main/java/" + dataMap.get("superPackage").replace('.', '/') + "/" + category.getPath() + "/" + dataMap.get("ClassName") + category.getName() + ".java");
+		String path = "src/main/java/" + dataMap.get("superPackage").replace('.', '/') + "/" + category.getPath() + "/" + dataMap.get("ClassName") + category.getName() + ".java";
+		File file = new File(path);
+		if (file.exists()) {
+			System.out.println("Generator: " + cls.getSimpleName() + category.getName() + "-exists");
+			return false;
+		}
+		FileUtils.newFile(content, path);
 		System.out.println("Generator: " + cls.getSimpleName() + category.getName() + "-finish");
 		return true;
 	}
